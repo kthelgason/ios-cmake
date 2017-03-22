@@ -18,7 +18,8 @@
 # CMAKE_IOS_SDK_ROOT = automatic(default) or /path/to/platform/Developer/SDKs/SDK folder
 #   By default this location is automatcially chosen based on the CMAKE_IOS_DEVELOPER_ROOT value.
 #   In this case it will always be the most up-to-date SDK found in the CMAKE_IOS_DEVELOPER_ROOT path.
-#   If set manually, this will force the use of a specific SDK version
+#   If set manually, this will force the use of a specific SDK version.
+cmake_policy(SET CMP0054 "NEW")
 
 # Standard settings
 set (CMAKE_SYSTEM_NAME Darwin)
@@ -86,10 +87,10 @@ endif ()
 set (IOS_PLATFORM ${IOS_PLATFORM} CACHE STRING "Type of iOS Platform")
 
 # Check the platform selection and setup for developer root
-if (${IOS_PLATFORM} STREQUAL "IOS" OR ${IOS_PLATFORM} STREQUAL "IOS64")
+if (${IOS_PLATFORM} STREQUAL "IOS" OR (${IOS_PLATFORM} STREQUAL "IOS64"))
 	set (IOS_PLATFORM_LOCATION "iPhoneOS.platform")
 	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos")
-elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR" OR ${IOS_PLATFORM} STREQUAL "SIMULATOR64")
+elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR" OR (${IOS_PLATFORM} STREQUAL "SIMULATOR64"))
     set (SIMULATOR true)
 	set (IOS_PLATFORM_LOCATION "iPhoneSimulator.platform")
 	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphonesimulator")
@@ -123,12 +124,16 @@ set (CMAKE_OSX_SYSROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS su
 # set the architecture for iOS
 if (${IOS_PLATFORM} STREQUAL "IOS64")
     set (IOS_ARCH arm64)
+    set (CMAKE_SYSTEM_PROCESSOR "aarch64")
 elseif (${IOS_PLATFORM} STREQUAL "IOS")
     set (IOS_ARCH armv7 armv7s)
+    set (CMAKE_SYSTEM_PROCESSOR "armv7-a")
 elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
     set (IOS_ARCH i386)
+    set (CMAKE_SYSTEM_PROCESSOR "i386")
 elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR64")
     set (IOS_ARCH x86_64)
+    set (CMAKE_SYSTEM_PROCESSOR "x86_64")
 endif ()
 
 # Set the find root to the iOS developer roots and to user defined paths
